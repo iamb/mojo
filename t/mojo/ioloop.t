@@ -117,6 +117,13 @@ ok !!Mojo::IOLoop->singleton->has_subscribers('finish'), 'has subscribers';
 Mojo::IOLoop->reset;
 ok !Mojo::IOLoop->singleton->has_subscribers('finish'), 'no subscribers';
 
+
+Mojo::IOLoop->reset;
+my $junk = Mojo::IOLoop->client({address => '127.0.0.1'} => sub { });
+# The poll reactor object is a hashref with handles in an 'io' hashref key.
+ok(!keys %{Mojo::IOLoop->singleton->reactor->{io}}, 'no handles created');
+Mojo::IOLoop->reset;
+
 # Stream
 my $buffer = '';
 $id = Mojo::IOLoop->server(
